@@ -3,6 +3,7 @@ const { adminAccount } = require("../secrets.json");
 async function main() {
     const [deployer] = await ethers.getSigners();
     console.log("Deploying contract with the account:", deployer.address);
+    // console.log("Account balance:", (await deployer.getBalance()).toString());
     
     const GreenTextNFT = await ethers.getContractFactory("GreenTextNFT");
     const greenTextNFT = await GreenTextNFT.deploy(adminAccount);
