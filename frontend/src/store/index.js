@@ -14,7 +14,7 @@ const provider = await web3Modal.connect();
 const web3 = new Web3(provider);
 //const web3 = new Web3(new Web3.providers.HttpProvider(config.mainNetUrl));
 
-const ERC721Con = new web3.eth.Contract(config.ERC721Abi, config.ERC721Address);
+const ERC721Con = new web3.eth.Contract(config.GreenTextNFTAbi, config.GreenTextNFTAddress);
 
 const uploadImage = (blob, url, fileName) => {
     const formData = new FormData();

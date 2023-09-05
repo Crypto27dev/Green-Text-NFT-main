@@ -29,14 +29,15 @@ module.exports = {
         testnet: {
             url: "https://data-seed-prebsc-1-s1.binance.org:8545",
             chainId: 97,
-            gasPrice: 40000000000,
-            accounts: { mnemonic: mnemonic },
+            gasPrice: 20000000000,
+            accounts: [mnemonic],
+            // accounts: { mnemonic: mnemonic },
         },
         mainnet: {
             url: "https://bsc-dataseed.binance.org/",
             chainId: 56,
             gasPrice: 20000000000,
-            accounts: { mnemonic: mnemonic },
+            accounts: [mnemonic],
         },
     },
 

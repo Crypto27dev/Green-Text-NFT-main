@@ -10,4 +10,6 @@ npx hardhat test
 REPORT_GAS=true npx hardhat test
 npx hardhat node
 npx hardhat run scripts/deploy.js
+npx hardhat verify --contract "contracts/GreenTextNFT.sol:GreenTextNFT" "deployed_contract_address" "addminaccount"
 ```
+Deployed contract address: 0xd5576796772e02eaBEd801b37471ed51393aFc52
