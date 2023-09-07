@@ -3,6 +3,7 @@ import Web3 from 'web3';
 import Web3Modal from "web3modal";
 import config from '../config/index';
 import { toast } from 'react-toastify';
+import axios from "axios";
 
 const providerOptions = {};
 const web3Modal = new Web3Modal({
@@ -16,24 +17,48 @@ const web3 = new Web3(provider);
 
 const ERC721Con = new web3.eth.Contract(config.GreenTextNFTAbi, config.GreenTextNFTAddress);
 
-const uploadImage = (blob, url, fileName) => {
+// const uploadImage = async (blob, url, fileName) => {
+//     const formData = new FormData();
+//     formData.append('image', blob, fileName);
+
+//     await fetch(url, {
+//         method: 'POST',
+//         mode: "no-cors",
+//         headers: {
+//             'Access-Control-Allow-Origin': '*',
+//             //'Content-Type': 'multipart/form-data',
+//         },
+//         body: formData
+//     }).then(response => {
+//         console.log(response);
+//     })
+//     .catch(error => {
+//         console.error(error);
+//     });
+// };
+
+const uploadImage = async (blob, url, fileName) => {
     const formData = new FormData();
+    console.log("blob is:", blob);
+    
     formData.append('image', blob, fileName);
 
-    fetch(url, {
-        method: 'POST',
+    console.log("formdata is: ", formData);
+
+    axios.post(url, formData, {
         mode: "no-cors",
         headers: {
             'Access-Control-Allow-Origin': '*',
-            //'Content-Type': 'multipart/form-data',
-        },
-        body: formData
-    }).then(response => {
-        console.log(response);
+            'Content-Type': 'multipart/form-data',
+        }
     })
-    .catch(error => {
-        console.error(error);
-    });
+        .then(response => {
+            console.log('axios request is successful!');
+            console.log(response);
+        })
+        .catch(error => {
+            console.error(error);
+        });
 };
 
 const mint = async (state, image) => {
@@ -50,7 +75,7 @@ const mint = async (state, image) => {
 
         const count = await ERC721Con.methods.balanceOf(state.account).call();
         const tokenId = await ERC721Con.methods.tokenOfOwnerByIndex(state.account, parseInt(count) - 1).call();
-        uploadImage(image, "http://localhost/green-text-nft", `${tokenId}.png`);
+        uploadImage(image, "http://localhost:3000/greentext-nft-upload", `${tokenId}.png`);
     } catch (e) {
         console.log(e);
     }
@@ -177,7 +202,7 @@ const reducer = (state = _initialState, action) => {
                 };
             }
             break;
-        
+
         case "CONNECT":
             console.log("Trying CONNECT<state, config>:", state.chainId, config.chainId);
             if (!checkNetwork(state.chainId)) {
@@ -185,7 +210,8 @@ const reducer = (state = _initialState, action) => {
                 return state;
             }
 
-            window.ethereum.request({ method: 'eth_accounts' }).then((accounts) => { 
+            // window.ethereum.send('eth_requestAccounts').then((accounts) => { 
+            window.ethereum.request({ method: 'eth_accounts' }).then((accounts) => {
                 if (accounts.length > 0) {
                     /*let options = {
                         filter: {
@@ -203,11 +229,12 @@ const reducer = (state = _initialState, action) => {
                             account: accounts[0]
                         }
                     });
+                    console.log('accounts is:', accounts[0]);
                 }
             })
-            .catch((err) => {
-                console.error(err);
-            });
+                .catch((err) => {
+                    console.error(err);
+                });
             break;
 
         case "MINT":
@@ -216,13 +243,14 @@ const reducer = (state = _initialState, action) => {
                 return state;
             }
 
-            ERC721Con.events.Transfer({
-                filter: { _to: state.account }
-            }).on("data", event=> {
-                let data = event.returnValues;
-                console.log(data);
-            });
+            // ERC721Con.events.Transfer({
+            //     filter: { _to: state.account }
+            // }).on("data", event=> {
+            //     let data = event.returnValues;
+            //     console.log(data);
+            // });
 
+            console.log('action.payload.image:', action.payload.image);
             mint(state, action.payload.image);
             break;
 

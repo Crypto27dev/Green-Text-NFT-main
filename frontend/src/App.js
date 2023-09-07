@@ -20,6 +20,7 @@ function App() {
 
     const mintNFT = () => {
         exportAsImage(gtContainer.current, (image) => {
+            console.log("image;", image);
             dispatch({ type: "MINT", payload: { image: image } });
         });
     };
@@ -31,11 +32,13 @@ function App() {
             size: Math.ceil(file.size / 1000),
             type: file.type.split('/')[1].toUpperCase(),
         });
+        console.log('Image URL:', URL.createObjectURL(file));
     };
 
     const handleConnect = async () => {
         console.log("Dispatching CONNECT...");
         if (window.ethereum) {
+            // await window.ethereum.send('eth_requestAccounts');
             await window.ethereum.enable();
             dispatch({
                 type: 'CONNECT',
